@@ -8,6 +8,7 @@
 - pydantic-settings 2.0.3
 - beanie 1.21.0
 - tqdm 4.66.1
+- protobuf 3.19.6
 > install
 > ~~~bash
 > pip install -r requirements.txt
