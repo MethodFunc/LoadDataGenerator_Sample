@@ -10,6 +10,18 @@ SECONDS_IN_DAY = 86400
 MINUTES_IN_DAY = 1440
 
 
+def calculate_g_range(calc_range, freq_times, args):
+    """
+        calculate range
+    """
+    if calc_range == 0:
+        return 1
+    elif (calc_range * args.WINDOW_SIZE * args.BATCH_SIZE) < freq_times:
+        return calc_range + 1
+
+    return calc_range
+
+
 def generate_data(dataset, model, args):
     # Generated data (batch x window x seq_len)
     generated_data = []
@@ -22,7 +34,7 @@ def generate_data(dataset, model, args):
 
     freq_times = timestamps[args.FREQ.lower()]
     calc_range = int(round(freq_times / (args.WINDOW_SIZE * args.BATCH_SIZE), 0))
-    g_range = 1 if calc_range == 0 else calc_range
+    g_range = calculate_g_range(calc_range, freq_times, args)
 
     with tf.device("CPU:0"):
         for i in range(g_range):
@@ -50,11 +62,11 @@ def create_dataframe(data, args, log):
     # date_ = 2023, 09, 03, 15
     date_ = datetime.now() + timedelta(days=1)
     date_ = datetime(date_.year, date_.month, date_.day, 0) - timedelta(hours=9)
-    log.info("="*20)
+    log.info("=" * 20)
     log.info(f"Current date: {datetime.now()}")
     log.info(f"Next Date: {datetime.now() + timedelta(days=1)}")
     log.info(f"Set UTC Date: {date_}")
-    log.info("="*20)
+    log.info("=" * 20)
 
     #  1 -> approximately 12 days 19:11:00 create data
     date_range = pd.date_range(start=date_, periods=len(dataframe), freq=args.FREQ)
