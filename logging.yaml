@@ -1,0 +1,33 @@
+version: 1
+
+formatters:
+  default:
+    format: '%(asctime)s [%(levelname)s] %(filename)s(%(lineno)s) %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: default
+    level: DEBUG
+    stream: ext://sys.stdout
+  file:
+    class: logging.handlers.TimedRotatingFileHandler
+    formatter: default
+    level: DEBUG
+    filename: ./logs/generator_log.log
+    when: midnight
+    backupCount: 7
+
+loggers:
+  type1:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: false
+  type2:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: false
+
+root:
+  level: WARNING
+  handlers: [console, file]
